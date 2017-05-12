@@ -3,11 +3,12 @@
 class DnaTranscriber {
 
     constructor() {
-        this.dictionary = new Map();
-        this.dictionary.set('G', 'C');
-        this.dictionary.set('C', 'G');
-        this.dictionary.set('T', 'A');
-        this.dictionary.set('A', 'U');
+        this.dictionary = new Map([
+            ['G', 'C'],
+            ['C', 'G'],
+            ['T', 'A'],
+            ['A', 'U']
+        ]);
     }
 
     toRna(str) {
