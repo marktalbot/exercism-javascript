@@ -1,33 +1,44 @@
 'use strict';
 
-class BeerSong {
+class Verse {
 
     constructor() {
-        this.start = 99;
-        this._num;
+        this._verseText = [];
     }
 
-    // sing(startingVerse, endingVerse = null) {}
+    compute(number, stopNumber = null) {
+        if (number < 0) {
+            return;
+        }
 
-    verse(num) {
-        this._num = num;
-        return this.buildVerse(this.num);
-        // return `${this.num} ${this.pluralize('bottle', 'bottles', this.num)} of beer on the wall, ${this.num} ${this.pluralize('bottle', 'bottles', this.num)} of beer.\nTake one down and pass it around, ${this.num = this.num - 1} ${this.pluralize('bottle', 'bottles', this.num = this.num - 1)} of beer on the wall.\n`;
+        if(number === stopNumber) {
+            return;
+        }
+
+        let versePart1 = `${this.parseNumber(number)} ${this.pluralize('bottle', 'bottles', number)} of beer on the wall, ${this.parseNumber(number)} ${this.pluralize('bottle', 'bottles', number)} of beer.\n`;
+        let versePart2 = `Take ${number - 1 == 0 ? 'it' : 'one'} down and pass it around, ${this.parseNumber(number - 1)} ${this.pluralize('bottle', 'bottles', number - 1)} of beer on the wall.\n`;
+
+        this._verseText.push(versePart1.concat(versePart2));
+
+        if (stopNumber != null && number - 1 !== stopNumber) {
+            this._verseText.push(`\n`)
+        }
+
+        if (stopNumber != null) {
+            this.compute(number - 1, stopNumber);
+        }
     }
 
-    buildVerse(verseNumber) {
-        let str1 = `${verseNumber} ${this.pluralize('bottle', 'bottles', verseNumber)} of beer on the wall, ${verseNumber} ${this.pluralize('bottle', 'bottles', verseNumber)} of beer.\n`       
-        let str2 = `Take ${verseNumber - 1 == 0 ? 'it' : 'one'} down and pass it around, ${verseNumber - 1 ? verseNumber - 1 : 'no more'} ${this.pluralize('bottle', 'bottles', verseNumber - 1)} of beer on the wall.\n`;
-
-        return str1.concat(str2);
+    get verseText() {
+        return this._verseText.join('');
     }
 
-    set num(value) {
-        this._num = value;
-    }
+    parseNumber(number) {
+        if (number === 0) {
+            return 'no more';
+        }
 
-    get num() {
-        return this._num;
+        return number;
     }
 
     pluralize(singular, plural, count) {
@@ -35,6 +46,23 @@ class BeerSong {
             return plural;
         }
         return singular;
+    }
+}
+
+class BeerSong {
+
+    sing(start, stop) {
+        let verse = new Verse;
+        verse.compute(start, stop - 1);
+
+        return verse.verseText;
+    }
+
+    verse(verseNumber) {
+        let verse = new Verse;
+        verse.compute(verseNumber);
+
+        return verse.verseText;
     }
 
 }
