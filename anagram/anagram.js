@@ -11,18 +11,12 @@ class Anagram {
     }
 
     getAnagrams(candidates) {
-        let words = this.transformInput(candidates)
+        let anagrams = this.transformInput(candidates)
             .filter((candidate) => !this.isOwnAnagram(candidate, this.word))
             .filter((candidate) => this.isSameLength(candidate, this.word))
-            .filter((candidate) => {
-                let wordArray      = this.word.split('').sort((a,b) => a.toLowerCase() > b.toLowerCase());
-                let candidateArray = candidate.split('').sort((a,b) => a.toLowerCase() > b.toLowerCase());
-                return wordArray.every((value, index) => {
-                    return value.match(new RegExp(candidateArray[index], 'i'));
-                });
-            }
+            .filter((candidate) => this.isMatch(candidate, this.word)
         );
-        return words;
+        return anagrams;
     }
 
     transformInput(candidates) {
@@ -40,6 +34,14 @@ class Anagram {
 
     isOwnAnagram(str1, str2) {
         return !!str1.match(new RegExp(str2, 'i'));
+    }
+
+    isMatch(str1, str2) {
+        let wordArray      = str2.split('').sort((a,b) => a.toLowerCase() > b.toLowerCase());
+        let candidateArray = str1.split('').sort((a,b) => a.toLowerCase() > b.toLowerCase());
+        return wordArray.every((value, index) => {
+            return value.match(new RegExp(candidateArray[index], 'i'));
+        });
     }
 }
 
